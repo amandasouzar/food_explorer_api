@@ -4,7 +4,7 @@
   "description": "An application for food delivery",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon ./src/server.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/amandasouzar/food_explorer_api/issues"
   },
-  "homepage": "https://github.com/amandasouzar/food_explorer_api#readme"
+  "homepage": "https://github.com/amandasouzar/food_explorer_api#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "knex": "^2.4.2",
+    "nodemon": "^2.0.22",
+    "sqlite3": "^5.1.6"
+  }
 }
