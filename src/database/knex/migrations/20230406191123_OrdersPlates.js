@@ -1,7 +1,7 @@
 exports.up = knex => knex.schema.createTable('Orders_Plates',  table => {
     table.increments('id')
-    table.integer('order_id').references('id').inTable('Orders')
-    table.integer('plate_id').references('id').inTable('Plates')
+    table.integer('order_id').references('id').inTable('Orders').onDelete('CASCADE')
+    table.integer('plate_id').references('id').inTable('Plates').onDelete('CASCADE')
     table.integer('quantity')
     table.float('price')
  })
