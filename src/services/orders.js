@@ -31,6 +31,7 @@ class OrdersServices {
           .where({ id: element.plate_id })
           .first();
 
+
         if (!choosenPlate) {
           await knex("Orders").where({ id: order_id }).delete();
           return { message: "Prato não cadastrado.", status: 400 };
@@ -191,7 +192,7 @@ class OrdersServices {
         return { message: 'Não há pedidos associados.', status: 400 };
       }
 
-        return { message: ordersFromClient, status: 400 };
+        return { message: ordersFromClient, status: 200 };
     } catch (err) {
       return err
     }

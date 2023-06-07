@@ -13,9 +13,9 @@ class IngredientsController {
             if (ingredientExists.length !== 0) {
                 return res.json({message: 'Já existe um ingrediente com esse nome.', status: 400})
             } else {
-                await ingredientsServices.create(name)
+                const id = await ingredientsServices.create(name)
     
-                return res.json({message: 'Ingrediente adicionado', status: 200})
+                return res.json({message: 'Ingrediente adicionado',id , status: 200})
             }
         } catch(err) {
             if (err.code === 'ER_DBACCESS_DENIED_ERROR') {

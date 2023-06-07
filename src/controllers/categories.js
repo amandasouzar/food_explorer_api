@@ -12,8 +12,8 @@ class CategoriesController {
         if (categoryExists.length !== 0) {
             return await res.json({ message: "Já existe uma categoria com esse nome.", status: 400 });
         } else {
-            await categoriesServices.create(name);
-            return await res.json({ message: "Categoria adicionada", status: 200 });
+            const id = await categoriesServices.create(name);
+            return await res.json({ message: "Categoria adicionada",id , status: 200 });
         }      
     } catch(err) {
         if (err.code === 'ER_DBACCESS_DENIED_ERROR') {

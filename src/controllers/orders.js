@@ -3,12 +3,13 @@ const ordersServices = new OrdersServices()
 
 class OrdersController {
   async create(req, res) {
-    const { client_id, admin_id } = req.params;
+    const { admin_id } = req.params;
+    const {user: client} = req
 
     const { plates } = req.body;
 
     try {
-      const returnedValues = await ordersServices.create(client_id, admin_id, plates)
+      const returnedValues = await ordersServices.create(client.id, admin_id, plates)
   
       return res.json({message: returnedValues.message, status: returnedValues.status})
 
@@ -40,10 +41,10 @@ class OrdersController {
   }}
 
   async GetByAdminId(req, res) {
-    const { admin_id } = req.params;
+    const { user: admin } = req
 
     try {
-      const returnedValues = await ordersServices.GetByAdminId(admin_id)
+      const returnedValues = await ordersServices.GetByAdminId(admin.id)
 
       return res.json({message: returnedValues.message, status: returnedValues.status});
     } catch (err) {
@@ -54,10 +55,10 @@ class OrdersController {
       }}}
 
   async GetByClientId(req, res) {
-    const { client_id } = req.params;
+    const { user: client } = req;
 
     try {
-      const returnedValues = await ordersServices.GetByClientId(client_id)
+      const returnedValues = await ordersServices.GetByClientId(client.id)
 
       return res.json({message: returnedValues.message, status: returnedValues.status});
     } catch (err) {

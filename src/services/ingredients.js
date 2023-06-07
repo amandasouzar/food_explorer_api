@@ -3,7 +3,9 @@ const knex = require('../database/knex')
 class IngredientsServices {
     async create(ingredientName) {
         try {
-            await knex('Ingredients').insert({name: ingredientName})
+            const id = await knex('Ingredients').insert({name: ingredientName})
+
+            return id
         } catch (err) {
             return err
         }
@@ -31,7 +33,7 @@ class IngredientsServices {
 
     async getByName (ingredientName) {
         try {
-            const ingredient = await knex('Ingredients').where({name: ingredientName})
+            const ingredient = await knex('Ingredients').whereLike("name", `%${ingredientName}%`)
 
             return ingredient
         } catch (err) {

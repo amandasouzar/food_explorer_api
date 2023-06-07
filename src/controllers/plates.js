@@ -31,12 +31,10 @@ class PlatesController {
   }
 
   async getByCategory(req, res) {
-    const { category_name } = req.body;
+    const { category_id } = req.params;
 
     try {
-      const platesByCategory = await platesServices.getByCategory(
-        category_name
-      );
+      const platesByCategory = await platesServices.getByCategory(category_id);
 
       if (!platesByCategory) {
         return res.json({ message: "Categoria não cadastrada.", status: 400 });
@@ -59,52 +57,45 @@ class PlatesController {
     }
   }
 
-  async getByName(req, res) {
-    const { nameInput } = req.body;
+  async filter(req, res) {
+    const { ingredient_name, plate_name } = req.query;
 
     try {
-      const platesByName = await platesServices.getByName(nameInput);
+      if (ingredient_name) {
+        const platesByIngredient = await platesServices.getByIngredients(
+          ingredient_name
+        );
 
-      if (platesByName.length === 0) {
-        return res.json({
-          message: "Não há pratos com esse nome. ",
-          status: 400,
-        });
+        if (!platesByIngredient) {
+          return res.json({
+            message: "Ingrediente não cadastrado.",
+            status: 400,
+          });
+        }
+
+        if (platesByIngredient.length === 0) {
+          return res.json({
+            message: "Não há pratos com esse ingrediente. Analisando nomes...",
+            status: 200,
+          });
+        }
+
+        return res.json({ message: platesByIngredient, status: 200 });
       }
 
-      return res.json({ message: platesByName, status: 200 });
-    } catch (err) {
-      if (err.code === "ER_DBACCESS_DENIED_ERROR") {
-        res.status(401).json({ error: "Acesso não autorizado." });
-      } else {
-        res.status(500).json({ error: "Erro interno do servidor." });
+      if (plate_name) {
+        const platesByName = await platesServices.getByName(plate_name);
+
+
+        if (platesByName.length === 0) {
+          return res.json({
+            message: "Não há pratos com esse nome. Analisando ingredientes...",
+            status: 400,
+          });
+        }
+
+        return res.json({ message: platesByName, status: 200 });
       }
-    }
-  }
-
-  async getByIngredients(req, res) {
-    const { ingredient_name } = req.body;
-
-    try {
-      const platesByIngredient = await platesServices.getByIngredients(
-        ingredient_name
-      );
-
-      if (!platesByIngredient) {
-        return res.json({
-          message: "Ingrediente não cadastrado.",
-          status: 400,
-        });
-      }
-
-      if (platesByIngredient.length === 0) {
-        return res.json({
-          message: "Não há pratos com esse ingrediente.",
-          status: 200,
-        });
-      }
-
-      return res.json({ message: platesByIngredient, status: 200 });
     } catch (err) {
       if (err.code === "ER_DBACCESS_DENIED_ERROR") {
         res.status(401).json({ error: "Acesso não autorizado." });
@@ -117,15 +108,18 @@ class PlatesController {
   async create(req, res) {
     const plateInformation = req.body;
 
-    const { admin_id } = req.params;
-    // depois isso virá da requisição com o user definido
+    const {user: admin} = req
+    
     try {
       const returnedInformation = await platesServices.create(
         plateInformation,
-        admin_id
+        admin.id
       );
 
-      return res.json({ message: returnedInformation.message, status: returnedInformation.status });
+      return res.json({
+        message: returnedInformation.message,
+        status: returnedInformation.status,
+      });
     } catch (err) {
       if (err.code === "ER_DBACCESS_DENIED_ERROR") {
         res.status(401).json({ error: "Acesso não autorizado." });
@@ -141,9 +135,15 @@ class PlatesController {
     const plateInformation = req.body;
 
     try {
-      const returnedInformation = await platesServices.update(plateInformation, id)
+      const returnedInformation = await platesServices.update(
+        plateInformation,
+        id
+      );
 
-      return res.json({ message: returnedInformation.message, status: returnedInformation.status });
+      return res.json({
+        message: returnedInformation.message,
+        status: returnedInformation.status,
+      });
     } catch (err) {
       if (err.code === "ER_DBACCESS_DENIED_ERROR") {
         res.status(401).json({ error: "Acesso não autorizado." });
