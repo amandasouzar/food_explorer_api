@@ -106,14 +106,24 @@ class PlatesController {
   }
 
   async create(req, res) {
-    const plateInformation = req.body;
 
+    const plateInformation = req.body
     const {user: admin} = req
+
+
+    const plateImg = req.files.file;
+    const uploadPath = __dirname + '/../../public/images/' + plateImg.name;
+  
+    plateImg.mv(uploadPath, function(err) {
+      if (err)
+        return res.status(500).send(err);
+    });
     
     try {
       const returnedInformation = await platesServices.create(
         plateInformation,
-        admin.id
+        admin[0].id,
+        plateImg.name
       );
 
       return res.json({
@@ -127,17 +137,26 @@ class PlatesController {
         res.status(500).json({ error: "Erro interno do servidor." });
       }
     }
-    // devo adicionar algo que verifique se o prato é repetido?
   }
 
   async update(req, res) {
     const { id } = req.params;
     const plateInformation = req.body;
 
+    const plateImg = req.files.file;
+    const uploadPath = __dirname + '/../../public/images/' + plateImg.name;
+
+  
+    plateImg.mv(uploadPath, function(err) {
+      if (err)
+        return res.status(500).send(err);
+    });
+
     try {
       const returnedInformation = await platesServices.update(
         plateInformation,
-        id
+        id,
+        plateImg.name
       );
 
       return res.json({

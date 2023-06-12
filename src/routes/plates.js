@@ -7,7 +7,7 @@ const platesRoutes = Router()
 const platesController = new PlatesController()
 
 platesRoutes.post('/create', Auth, checkIsAdmin, platesController.create)
-platesRoutes.put('/update/:id', Auth, platesController.update)
+platesRoutes.post('/update/:id', Auth, platesController.update)
 platesRoutes.delete('/delete/:id', Auth, checkIsAdmin, platesController.delete)
 platesRoutes.get('/get/:id', Auth, platesController.getById)
 platesRoutes.get('/category/:category_id', Auth, platesController.getByCategory)

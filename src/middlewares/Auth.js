@@ -18,8 +18,10 @@ const Auth = async (req, res, next) => {
     }
 
     const user = await knex("Users").where({ id: user_id });
+    const isAdmin = user[0].isAdmin
 
     req.user = user;
+    req.isAdmin = isAdmin
 
     return next();
   } catch {

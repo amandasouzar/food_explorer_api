@@ -29,6 +29,12 @@ class SessionController {
         }
 
     }
+
+    async isAdmin (req, res) {
+        const {isAdmin} = req
+        
+        return res.json({isAdmin})
+    }
 }
 
 module.exports = SessionController

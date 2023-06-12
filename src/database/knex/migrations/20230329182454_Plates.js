@@ -6,7 +6,6 @@ exports.up = knex => knex.schema.createTable('Plates',  table => {
     table.string('description')
     table.string('image')
     table.float('price')
-    table.boolean('isFavorite')
  })
 
 exports.down = knex => knex.schema.dropTable('Plates')

@@ -1,4 +1,5 @@
 const knex = require("../database/knex");
+const uniqid = require('uniqid')
 
 class PlatesServices {
   async getById(plateId) {
@@ -64,30 +65,13 @@ class PlatesServices {
     }
   }
 
-  // async getFavorites() {
-  //   try {
-  //     let isFavorites = await knex("Plates").where({
-  //       isFavorite: true
-  //     });
+  async create(plateInformation, adminId, imgName) {
+    const parsedName = JSON.parse(plateInformation.name)
+    const parsedCategoryId = JSON.parse(plateInformation.category_id)
+    const parseDescription = JSON.parse(plateInformation.description)
+    const parsedPrice = JSON.parse(plateInformation.price)
+    const parsedIngredientsIds = JSON.parse(plateInformation.ingredientsId)
 
-  //     let message;
-  //     let status;
-
-  //     if (isFavorites.length === 0) {
-  //       message = 'Não há pratos favoritados'
-  //       status = 200
-  //     } else {
-  //       message = isFavorites
-  //       status = 200
-  //     }
-
-
-  //   } catch (err) {
-  //     return err;
-  //   }
-  // }
-
-  async create(plateInformation, adminId) {
     try {
       let categoryIsValid = await knex("Categories").where({
         id: plateInformation.category_id,
@@ -111,16 +95,15 @@ class PlatesServices {
       }
 
       const plate_id = +(await knex("Plates").insert({
-        name: plateInformation.name,
-        category_id: plateInformation.category_id,
-        description: plateInformation.description,
-        image: plateInformation.image,
-        price: plateInformation.price,
-        isFavorite: false,
+        name: parsedName,
+        category_id: parsedCategoryId,
+        description: parseDescription,
+        image: uniqid() + '/' +  imgName,
+        price: parsedPrice,
         admin_id: adminId,
       }));
 
-      for await (let id of plateInformation.ingredientsId) {
+      for await (let id of parsedIngredientsIds) {
         let ingredient = await knex("Ingredients").where({ id: id });
 
         if (ingredient.length === 0) {
@@ -131,8 +114,6 @@ class PlatesServices {
         }
 
         const ingredient_id = ingredient[0].id;
-
-        console.log(ingredient_id, plate_id);
 
         await knex("Ingredients_Plates").insert({
           plate_id,
@@ -148,12 +129,19 @@ class PlatesServices {
     }
   }
 
-  async update(plateInformation, plateId) {
+  async update(plateInformation, plateId, imgName) {
     try {
       let message;
       let status;
 
       const { plate } = await this.getById(plateId);
+
+      const parsedName = JSON.parse(plateInformation.name)
+      const parsedCategoryId = JSON.parse(plateInformation.category_id)
+      const parseDescription = JSON.parse(plateInformation.description)
+      const parsedPrice = JSON.parse(plateInformation.price)
+      const parsedIngredientsIds = JSON.parse(plateInformation.ingredientsId)
+      const parsedRemovedItens = JSON.parse(plateInformation.removedItens)
 
       if (plate.length === 0) {
         message = "Não há pratos com esse id.";
@@ -161,18 +149,17 @@ class PlatesServices {
         return { message, status };
       }
 
-      const newName = plateInformation.name ?? plate[0].name;
+      const newName = parsedName ?? plate[0].name;
 
       const newCategory_id =
-        plateInformation.category_id ?? plate[0].category_id;
+        parsedCategoryId ?? plate[0].category_id;
       const newDescription =
-        plateInformation.description ?? plate[0].description;
-      const newImage = plateInformation.image ?? plate[0].image;
-      const newPrice = plateInformation.price ?? plate[0].price;
-      const newIsFavorite = plateInformation.isFavorite ?? plate[0].isFavorite;
+        parseDescription ?? plate[0].description;
+      const newImage = uniqid() + '/' +  imgName ?? plate[0].image;
+      const newPrice = parsedPrice ?? plate[0].price;
 
-      if (plateInformation.addedItens) {
-        for await (const element of plateInformation.addedItens) {
+      if (parsedIngredientsIds) {
+        for await (const element of parsedIngredientsIds) {
           const ingredient = await knex("Ingredients").where({
             id: element,
           });
@@ -192,8 +179,6 @@ class PlatesServices {
             })
             .first();
 
-            console.log(existingIngredient)
-
           if (!existingIngredient) {
             await knex("Ingredients_Plates").insert({
               plate_id: +plateId,
@@ -203,8 +188,8 @@ class PlatesServices {
         }
       }
 
-      if (plateInformation.removedItens) {
-        for await (const element of plateInformation.removedItens) {
+      if (parsedRemovedItens) {
+        for await (const element of parsedRemovedItens) {
           const ingredient = await knex("Ingredients").where({
             id: element,
           });
@@ -225,8 +210,7 @@ class PlatesServices {
         category_id: newCategory_id,
         description: newDescription,
         image: newImage,
-        price: newPrice,
-        isFavorite: newIsFavorite,
+        price: newPrice
       });
 
       return { message: "Prato atualizado!", status: 200 };
