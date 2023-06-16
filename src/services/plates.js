@@ -98,7 +98,7 @@ class PlatesServices {
         name: parsedName,
         category_id: parsedCategoryId,
         description: parseDescription,
-        image: uniqid() + '/' +  imgName,
+        image: imgName,
         price: parsedPrice,
         admin_id: adminId,
       }));
@@ -155,7 +155,7 @@ class PlatesServices {
         parsedCategoryId ?? plate[0].category_id;
       const newDescription =
         parseDescription ?? plate[0].description;
-      const newImage = uniqid() + '/' +  imgName ?? plate[0].image;
+      const newImage = imgName ?? plate[0].image;
       const newPrice = parsedPrice ?? plate[0].price;
 
       if (parsedIngredientsIds) {

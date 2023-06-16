@@ -1,5 +1,6 @@
 const PlatesServices = require("../services/plates");
 const platesServices = new PlatesServices();
+const uniqid = require("uniqid");
 
 const knex = require("../database/knex");
 
@@ -75,8 +76,8 @@ class PlatesController {
 
         if (platesByIngredient.length === 0) {
           return res.json({
-            message: "Não há pratos com esse ingrediente. Analisando nomes...",
-            status: 200,
+            message: "Não há pratos com esse ingrediente.",
+            status: 400,
           });
         }
 
@@ -85,7 +86,6 @@ class PlatesController {
 
       if (plate_name) {
         const platesByName = await platesServices.getByName(plate_name);
-
 
         if (platesByName.length === 0) {
           return res.json({
@@ -106,19 +106,16 @@ class PlatesController {
   }
 
   async create(req, res) {
-
-    const plateInformation = req.body
-    const {user: admin} = req
-
+    const plateInformation = req.body;
+    const { user: admin } = req;
 
     const plateImg = req.files.file;
-    const uploadPath = __dirname + '/../../public/images/' + plateImg.name;
-  
-    plateImg.mv(uploadPath, function(err) {
-      if (err)
-        return res.status(500).send(err);
+    const uploadPath = __dirname + "/../../public/images/" + plateImg.name;
+
+    plateImg.mv(uploadPath, function (err) {
+      if (err) return res.status(500).send(err);
     });
-    
+
     try {
       const returnedInformation = await platesServices.create(
         plateInformation,
@@ -143,26 +140,38 @@ class PlatesController {
     const { id } = req.params;
     const plateInformation = req.body;
 
-    const plateImg = req.files.file;
-    const uploadPath = __dirname + '/../../public/images/' + plateImg.name;
-
-  
-    plateImg.mv(uploadPath, function(err) {
-      if (err)
-        return res.status(500).send(err);
-    });
+    console.log(plateInformation);
 
     try {
-      const returnedInformation = await platesServices.update(
-        plateInformation,
-        id,
-        plateImg.name
-      );
+      if (req.files) {
+        const plateImg = req.files.file;
+        const uploadPath = __dirname + "/../../public/images/" + plateImg.name;
 
-      return res.json({
-        message: returnedInformation.message,
-        status: returnedInformation.status,
-      });
+        plateImg.mv(uploadPath, function (err) {
+          if (err) return res.status(500).send(err);
+        });
+
+        const returnedInformation = await platesServices.update(
+          plateInformation,
+          id,
+          plateImg.name
+        );
+
+        return res.json({
+          message: returnedInformation.message,
+          status: returnedInformation.status,
+        });
+      } else {
+        const returnedInformation = await platesServices.update(
+          plateInformation,
+          id
+        );
+
+        return res.json({
+          message: returnedInformation.message,
+          status: returnedInformation.status,
+        });
+      }
     } catch (err) {
       if (err.code === "ER_DBACCESS_DENIED_ERROR") {
         res.status(401).json({ error: "Acesso não autorizado." });
