@@ -7,7 +7,7 @@ class CategoriesServices {
         name: categoryName,
       });
 
-      return id
+      return {id: +id, name: categoryName}
     } catch (err) {
       return err;
     }

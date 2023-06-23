@@ -7,8 +7,11 @@ class FavoritesServices {
         plate_id,
         client_id: user.id,
       });
+      
+      console.log(plate_id)
+      console.log(alreadyConnect)
 
-      if (alreadyConnect.length !== 0) {
+      if (alreadyConnect.length !== 0 ) {
         return;
       } else {
         const id = await knex("Favorites").insert({

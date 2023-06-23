@@ -2,6 +2,16 @@ const knex = require("../database/knex");
 const uniqid = require('uniqid')
 
 class PlatesServices {
+  async getAll() {
+    try {
+      const plates = await knex('Plates')
+
+      return plates
+    } catch (err) {
+      return err;
+    }
+  }
+
   async getById(plateId) {
     try {
       const plate = await knex("Plates").where({ id: plateId });

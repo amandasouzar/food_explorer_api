@@ -10,7 +10,7 @@ class FavoritesController {
       const id = await favoritesServices.connect(plate_id, client[0]);
 
       if (id) {
-          return res.json({ message: "Prato conectado", status: 200 });
+        return res.json({ message: "Prato conectado", status: 200 });
       } else {
         return res.json({ message: "Prato já foi conectado", status: 200 });
       }

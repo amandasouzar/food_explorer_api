@@ -5,6 +5,29 @@ const uniqid = require("uniqid");
 const knex = require("../database/knex");
 
 class PlatesController {
+  async getAll(req,res) {
+    try {
+      const plates = await platesServices.getAll() 
+      
+      if (plates.length === 0) {
+        return res.json({
+          message: "Não há pratos.",
+          status: 400,
+        });
+      } else {
+        return res.json({
+          message: plates,
+          status: 200,
+        });
+      }
+    } catch (err) {
+      if (err.code === "ER_DBACCESS_DENIED_ERROR") {
+        res.status(401).json({ error: "Acesso não autorizado." });
+      } else {
+        res.status(500).json({ error: "Erro interno do servidor." });
+      }
+  }}
+
   async getById(req, res) {
     const { id } = req.params;
 
@@ -44,7 +67,7 @@ class PlatesController {
       if (platesByCategory.length === 0) {
         return res.json({
           message: "Não há pratos nessa categoria.",
-          status: 200,
+          status: 400,
         });
       }
 

@@ -4,7 +4,8 @@
   "description": "An application for food delivery",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./src/server.js"
+    "start": "nodemon ./src/server.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
+    "dayjs": "^1.11.8",
     "express": "^4.18.2",
     "express-fileupload": "^1.4.0",
     "jsonwebtoken": "^9.0.0",
@@ -27,5 +29,8 @@
     "nodemon": "^2.0.22",
     "sqlite3": "^5.1.6",
     "uniqid": "^5.4.0"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0"
   }
 }

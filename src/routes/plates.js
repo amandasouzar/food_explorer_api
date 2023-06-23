@@ -12,5 +12,6 @@ platesRoutes.delete('/delete/:id', Auth, checkIsAdmin, platesController.delete)
 platesRoutes.get('/get/:id', Auth, platesController.getById)
 platesRoutes.get('/category/:category_id', Auth, platesController.getByCategory)
 platesRoutes.get('/filter', Auth, platesController.filter)
+platesRoutes.get('/getAll', Auth, platesController.getAll)
 
 module.exports = platesRoutes

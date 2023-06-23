@@ -4,7 +4,7 @@ exports.up = knex => knex.schema.createTable('Orders',  table => {
     table.integer('client_id').references('id').inTable('Users').onDelete('CASCADE')
     table.string('status')
     table.float('totalPrice')
-    table.timestamp('created_at').defaultTo(knex.fn.now())
+    table.date('created_at').defaultTo(knex.fn.now())
  })
 
 exports.down = knex => knex.schema.dropTable('Orders')
