@@ -4,7 +4,7 @@
   "description": "An application for food delivery",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./src/server.js",
+    "dev": "nodemon ./src/server.js",
     "test": "jest"
   },
   "repository": {
