@@ -7,9 +7,6 @@ class FavoritesServices {
         plate_id,
         client_id: user.id,
       });
-      
-      console.log(plate_id)
-      console.log(alreadyConnect)
 
       if (alreadyConnect.length !== 0 ) {
         return;
